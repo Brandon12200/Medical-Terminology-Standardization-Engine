@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # API Settings
-    api_title: str = "Medical Terminology Mapper API"
+    api_title: str = "Medical Terminology Standardization Engine API"
     api_version: str = "1.0.0"
     api_description: str = "API for mapping medical terms to standardized terminologies"
     

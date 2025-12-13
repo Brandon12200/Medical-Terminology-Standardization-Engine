@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Medical Terminology Mapper - Stop Script
+# Medical Terminology Standardization Engine - Stop Script
 # This script stops the entire application stack and cleans up resources
 
 set -e  # Exit on any error
@@ -128,7 +128,7 @@ show_status() {
 main() {
     local cleanup_level="${1:-default}"
     
-    echo "🛑 Stopping Medical Terminology Mapper..."
+    echo "Stopping Medical Terminology Standardization Engine..."
     echo "========================================"
     
     # Pre-flight checks
@@ -171,7 +171,7 @@ main() {
     print_status "Final status check..."
     show_status
     
-    print_success "Medical Terminology Mapper stopped successfully!"
+    print_success "Medical Terminology Standardization Engine stopped successfully!"
     
     # Show restart information
     echo ""

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Medical Terminology Mapper - Start Script
+# Medical Terminology Standardization Engine - Start Script
 # This script starts the entire application stack using Docker Compose
 
 set -e  # Exit on any error
@@ -118,7 +118,7 @@ open_browser() {
 # Function to display service URLs
 show_urls() {
     echo ""
-    echo "🎉 Medical Terminology Mapper is now running!"
+    echo "Medical Terminology Standardization Engine is now running!"
     echo ""
     echo "📱 Access Points:"
     echo "   • Web Interface:      http://localhost:3000"
@@ -140,7 +140,7 @@ show_urls() {
 
 # Main execution
 main() {
-    echo "🏥 Starting Medical Terminology Mapper..."
+    echo "Starting Medical Terminology Standardization Engine..."
     echo "========================================"
     
     # Pre-flight checks

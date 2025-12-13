@@ -401,7 +401,7 @@ function App() {
             className="app-title"
             style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}
           >
-            Medical Terminology Mapper
+            Medical Terminology Standardization Engine
           </button>
           <nav className="nav-links">
             <button 
@@ -454,7 +454,7 @@ function App() {
             <div>
               <div className="hero-section">
                 <h1 className="hero-title">
-                  Medical Terminology Mapper
+                  Medical Terminology Standardization Engine
                 </h1>
                 <p className="hero-subtitle">
                   Transform medical terms into standardized terminologies with precision. 
@@ -1117,7 +1117,7 @@ function App() {
                 Documentation
               </h1>
               <p className="form-description">
-                Learn how to use the Medical Terminology Mapper effectively for standardizing healthcare data.
+                Learn how to use the Medical Terminology Standardization Engine effectively for standardizing healthcare data.
               </p>
 
               <div style={{ display: 'grid', gap: '2rem', marginTop: '2rem' }}>
@@ -1127,7 +1127,7 @@ function App() {
                     Getting Started
                   </h2>
                   <p style={{ color: '#4a5568', marginBottom: '1rem' }}>
-                    The Medical Terminology Mapper helps you convert medical terms into standardized codes from 
+                    The Medical Terminology Standardization Engine helps you convert medical terms into standardized codes from 
                     SNOMED CT, LOINC, and RxNorm terminologies.
                   </p>
                   <ul style={{ color: '#4a5568', paddingLeft: '1.5rem' }}>
@@ -1208,7 +1208,7 @@ function App() {
                   </h2>
                   <div style={{ color: '#4a5568' }}>
                     <p style={{ marginBottom: '1rem' }}>
-                      Integrate the Medical Terminology Mapper into your applications:
+                      Integrate the Medical Terminology Standardization Engine into your applications:
                     </p>
                     <div style={{ background: '#f7fafc', padding: '1rem', borderRadius: '8px', marginBottom: '1rem' }}>
                       <p style={{ fontFamily: 'monospace', fontSize: '0.875rem' }}>
@@ -1234,7 +1234,7 @@ function App() {
       <footer className="app-footer">
         <div className="footer-content">
           <div className="footer-section">
-            <h4 className="footer-title">Medical Terminology Mapper</h4>
+            <h4 className="footer-title">Medical Terminology Standardization Engine</h4>
             <p className="footer-description">
               Transforming medical terms into standardized terminologies with precision and reliability.
             </p>
@@ -1261,7 +1261,7 @@ function App() {
         </div>
         
         <div className="footer-bottom">
-          <p>&copy; 2025 Medical Terminology Mapper. Built for healthcare data standardization.</p>
+          <p>&copy; 2025 Medical Terminology Standardization Engine. Built for healthcare data standardization.</p>
         </div>
       </footer>
     </div>

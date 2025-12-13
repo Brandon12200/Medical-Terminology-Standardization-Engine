@@ -1,10 +1,10 @@
-# Medical Terminology Mapper
+# Medical Terminology Standardization Engine
 
 Healthcare systems use inconsistent terminology—one system calls it "heart attack," another "myocardial infarction," another "MI." This breaks interoperability. This tool standardizes medical terms to SNOMED CT, LOINC, and RxNorm so systems can actually talk to each other.
 
 ## How It Works
 
-The mapper processes terms through a priority-based pipeline:
+The engine processes terms through a priority-based pipeline:
 
 ```
 Input Term → External APIs → Local Database Fallback → Fuzzy Matching → Ranked Results

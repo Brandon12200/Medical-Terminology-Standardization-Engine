@@ -19,7 +19,7 @@ logger = setup_logger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    logger.info("Starting Medical Terminology Mapper API")
+    logger.info("Starting Medical Terminology Standardization Engine API")
     
     # Initialize any resources here
     # For example: database connections, cache, etc.
@@ -27,11 +27,11 @@ async def lifespan(app: FastAPI):
     yield
     
     # Shutdown
-    logger.info("Shutting down Medical Terminology Mapper API")
+    logger.info("Shutting down Medical Terminology Standardization Engine API")
 
 # Create FastAPI app
 app = FastAPI(
-    title="Medical Terminology Mapper API",
+    title="Medical Terminology Standardization Engine API",
     description="API for mapping medical terms to standardized terminologies (SNOMED CT, LOINC, RxNorm)",
     version="1.0.0",
     docs_url="/api/docs",
