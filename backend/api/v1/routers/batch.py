@@ -67,7 +67,7 @@ async def upload_batch_file(
     context: Optional[str] = Form(default=None),
     fuzzy_threshold: float = Form(default=0.7, ge=0.0, le=1.0),
     fuzzy_algorithms: Optional[List[str]] = Form(default=["all"]),
-    max_results_per_term: int = Form(default=5, ge=1, le=50)
+    max_results_per_term: int = Form(default=3, ge=1, le=50)
 ):
     """
     Upload a file for batch terminology mapping.

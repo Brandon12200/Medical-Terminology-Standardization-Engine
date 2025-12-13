@@ -187,7 +187,32 @@ const ConfidenceBar = ({ confidence, height = 'md', showLabel = true }: {
 function App() {
   // Navigation state
   const [currentView, setCurrentView] = useState<'home' | 'single' | 'batch' | 'docs'>('home');
-  
+
+  // Expanded rows state for batch results
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
+
+  const toggleRowExpanded = (index: number) => {
+    setExpandedRows(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
+  };
+
+  const expandAllRows = () => {
+    if (batchResults) {
+      setExpandedRows(new Set(batchResults.map((_, i) => i)));
+    }
+  };
+
+  const collapseAllRows = () => {
+    setExpandedRows(new Set());
+  };
+
   // Single mapping state
   const [singleResults, setSingleResults] = useState<MappingResponse | null>(null);
   const [singleFormData, setSingleFormData] = useState<MappingRequest>({
@@ -414,7 +439,7 @@ function App() {
                 e.target.style.background = 'rgba(255, 255, 255, 0.1)';
               }}
             >
-              📖 Docs
+              Docs
             </button>
           </nav>
         </div>
@@ -438,12 +463,25 @@ function App() {
               </div>
 
               <div className="feature-grid">
-                <button 
-                  onClick={() => setCurrentView('single')} 
+                <button
+                  onClick={() => setCurrentView('single')}
                   className="feature-card"
                   style={{ border: 'none', cursor: 'pointer', textAlign: 'left' }}
                 >
-                  <div className="feature-icon">📋</div>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '12px',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '1rem'
+                  }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                  </div>
                   <h2 className="feature-title">
                     Single Term Mapping
                   </h2>
@@ -453,12 +491,28 @@ function App() {
                   <span className="feature-link">Get started →</span>
                 </button>
 
-                <button 
-                  onClick={() => setCurrentView('batch')} 
+                <button
+                  onClick={() => setCurrentView('batch')}
                   className="feature-card"
                   style={{ border: 'none', cursor: 'pointer', textAlign: 'left' }}
                 >
-                  <div className="feature-icon">📁</div>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '12px',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '1rem'
+                  }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="3" width="7" height="7" rx="1"/>
+                      <rect x="14" y="3" width="7" height="7" rx="1"/>
+                      <rect x="3" y="14" width="7" height="7" rx="1"/>
+                      <rect x="14" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                  </div>
                   <h2 className="feature-title">
                     Batch Processing
                   </h2>
@@ -661,7 +715,7 @@ function App() {
                   {/* File Upload Section */}
                   <div className="upload-section">
                     <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', color: '#1a202c' }}>
-                      📤 Upload Your Own CSV File
+                      Upload Your Own CSV File
                     </h2>
                     <p style={{ color: '#4a5568', marginBottom: '1rem' }}>
                       Upload a CSV file with medical terms in the first column. Our system will automatically 
@@ -686,7 +740,7 @@ function App() {
                   {/* Sample Files */}
                   <div>
                     <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem', color: '#1a202c' }}>
-                      📁 Or Try Our Sample Files
+                      Or Try Our Sample Files
                     </h2>
                     <div className="feature-grid">
                       {SAMPLE_FILES.map((file, index) => (
@@ -709,7 +763,7 @@ function App() {
                                 padding: '0.5rem 1rem'
                               }}
                             >
-                              🚀 Try Sample
+                              Try Sample
                             </button>
                             <button
                               onClick={() => downloadSampleFile(file.filename)}
@@ -720,7 +774,7 @@ function App() {
                                 padding: '0.5rem 1rem'
                               }}
                             >
-                              📥 Download
+                              Download
                             </button>
                           </div>
                         </div>
@@ -736,7 +790,7 @@ function App() {
                       textAlign: 'center'
                     }}>
                       <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem' }}>
-                        🎯 Perfect for Demonstrating Enterprise Capabilities
+                        Perfect for Demonstrating Enterprise Capabilities
                       </h3>
                       <p style={{ opacity: '0.9', marginBottom: '1rem' }}>
                         These comprehensive datasets showcase real-world medical terminology mapping at scale, 
@@ -788,106 +842,267 @@ function App() {
               {isComplete && batchResults && (
                 <div className="results-container">
                   <div className="result-card">
-                    <div className="result-header">
-                      <h2 className="result-term">
-                        🎉 Batch Processing Complete - {batchResults.length} terms processed
-                      </h2>
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button
-                          onClick={() => downloadBatchResults('csv')}
-                          className="btn btn-secondary"
-                        >
-                          Download CSV
-                        </button>
-                        <button
-                          onClick={() => downloadBatchResults('json')}
-                          className="btn btn-secondary"
-                        >
-                          Download JSON
-                        </button>
+                    <div style={{ marginBottom: '1.5rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <h2 className="result-term" style={{ margin: 0 }}>
+                          Batch Processing Complete - {batchResults.length} terms processed
+                        </h2>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', backgroundColor: '#f7fafc', borderRadius: '6px', padding: '0.25rem' }}>
+                          <button
+                            onClick={expandAllRows}
+                            style={{
+                              padding: '0.4rem 0.75rem',
+                              fontSize: '0.8rem',
+                              border: 'none',
+                              backgroundColor: expandedRows.size === batchResults.length ? '#667eea' : 'transparent',
+                              color: expandedRows.size === batchResults.length ? 'white' : '#4a5568',
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              fontWeight: '500',
+                              transition: 'all 0.15s ease'
+                            }}
+                          >
+                            Expand All
+                          </button>
+                          <button
+                            onClick={collapseAllRows}
+                            style={{
+                              padding: '0.4rem 0.75rem',
+                              fontSize: '0.8rem',
+                              border: 'none',
+                              backgroundColor: expandedRows.size === 0 ? '#667eea' : 'transparent',
+                              color: expandedRows.size === 0 ? 'white' : '#4a5568',
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              fontWeight: '500',
+                              transition: 'all 0.15s ease'
+                            }}
+                          >
+                            Collapse All
+                          </button>
+                        </div>
+                        <div style={{ height: '24px', width: '1px', backgroundColor: '#e2e8f0' }} />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <button
+                            onClick={() => downloadBatchResults('csv')}
+                            style={{
+                              padding: '0.5rem 1rem',
+                              fontSize: '0.8rem',
+                              border: 'none',
+                              background: 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)',
+                              color: 'white',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontWeight: '600',
+                              transition: 'all 0.15s ease',
+                              boxShadow: '0 2px 4px rgba(72, 187, 120, 0.3)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.375rem'
+                            }}
+                            onMouseEnter={(e) => {
+                              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+                              (e.target as HTMLButtonElement).style.boxShadow = '0 4px 8px rgba(72, 187, 120, 0.4)';
+                            }}
+                            onMouseLeave={(e) => {
+                              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+                              (e.target as HTMLButtonElement).style.boxShadow = '0 2px 4px rgba(72, 187, 120, 0.3)';
+                            }}
+                          >
+                            Download CSV
+                          </button>
+                          <button
+                            onClick={() => downloadBatchResults('json')}
+                            style={{
+                              padding: '0.5rem 1rem',
+                              fontSize: '0.8rem',
+                              border: 'none',
+                              background: 'linear-gradient(135deg, #667eea 0%, #5a67d8 100%)',
+                              color: 'white',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontWeight: '600',
+                              transition: 'all 0.15s ease',
+                              boxShadow: '0 2px 4px rgba(102, 126, 234, 0.3)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.375rem'
+                            }}
+                            onMouseEnter={(e) => {
+                              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+                              (e.target as HTMLButtonElement).style.boxShadow = '0 4px 8px rgba(102, 126, 234, 0.4)';
+                            }}
+                            onMouseLeave={(e) => {
+                              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+                              (e.target as HTMLButtonElement).style.boxShadow = '0 2px 4px rgba(102, 126, 234, 0.3)';
+                            }}
+                          >
+                            Download JSON
+                          </button>
+                        </div>
                       </div>
                     </div>
 
-                    <div style={{ overflowX: 'auto', marginTop: '1.5rem' }}>
-                      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                        <thead>
-                          <tr style={{ backgroundColor: '#f7fafc' }}>
-                            <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '600', color: '#4a5568', textTransform: 'uppercase' }}>
-                              Medical Term
-                            </th>
-                            <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '600', color: '#4a5568', textTransform: 'uppercase' }}>
-                              Mappings Found
-                            </th>
-                            <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '600', color: '#4a5568', textTransform: 'uppercase' }}>
-                              Terminology Mappings
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {batchResults.map((result: MappingResponse, index: number) => (
-                            <tr key={`${result.term}-${index}`} style={{ borderBottom: '1px solid #e2e8f0', minHeight: '3rem' }}>
-                              <td style={{ padding: '1rem', fontSize: '0.875rem', color: '#1a202c', fontWeight: '500', verticalAlign: 'middle' }}>
+                    <div style={{ marginTop: '1.5rem' }}>
+                      {batchResults.map((result: MappingResponse, index: number) => {
+                        const isExpanded = expandedRows.has(index);
+                        const bestMatch = result.mappings[0];
+
+                        return (
+                          <div
+                            key={`${result.term}-${index}`}
+                            style={{
+                              borderBottom: '1px solid #e2e8f0',
+                              backgroundColor: isExpanded ? '#f7fafc' : 'white'
+                            }}
+                          >
+                            {/* Collapsed Row - Always visible */}
+                            <div
+                              onClick={() => result.mappings.length > 0 && toggleRowExpanded(index)}
+                              style={{
+                                display: 'grid',
+                                gridTemplateColumns: '24px 200px 90px 1fr',
+                                alignItems: 'center',
+                                padding: '0.875rem 1rem',
+                                cursor: result.mappings.length > 0 ? 'pointer' : 'default',
+                                gap: '0.75rem'
+                              }}
+                            >
+                              {/* Expand/Collapse Icon */}
+                              <div style={{
+                                width: '24px',
+                                height: '24px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: result.mappings.length > 0 ? '#667eea' : '#cbd5e0',
+                                fontSize: '0.875rem',
+                                fontWeight: 'bold',
+                                transition: 'transform 0.2s ease',
+                                transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)'
+                              }}>
+                                {result.mappings.length > 0 ? '▶' : '○'}
+                              </div>
+
+                              {/* Term */}
+                              <div style={{ fontWeight: '600', color: '#1a202c', fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                 {result.term}
-                              </td>
-                              <td style={{ padding: '1rem', fontSize: '0.875rem', color: '#4a5568', verticalAlign: 'middle', minHeight: '3rem' }}>
-                                <span style={{ 
-                                  backgroundColor: result.mappings.length > 0 ? '#48bb78' : '#ed8936', 
-                                  color: 'white', 
-                                  padding: '0.25rem 0.75rem', 
-                                  borderRadius: '20px', 
-                                  fontSize: '0.75rem', 
+                              </div>
+
+                              {/* Match Count Badge */}
+                              <div>
+                                <span style={{
+                                  backgroundColor: result.mappings.length > 0 ? '#48bb78' : '#ed8936',
+                                  color: 'white',
+                                  padding: '0.25rem 0.6rem',
+                                  borderRadius: '20px',
+                                  fontSize: '0.7rem',
                                   fontWeight: '600',
-                                  display: 'inline-block',
                                   whiteSpace: 'nowrap'
                                 }}>
                                   {result.mappings.length} {result.mappings.length === 1 ? 'match' : 'matches'}
                                 </span>
-                              </td>
-                              <td style={{ padding: '1rem', fontSize: '0.875rem', color: '#4a5568', verticalAlign: 'middle' }}>
-                                {result.mappings.length > 0 ? (
-                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                                    {result.mappings.map((mapping, mappingIndex) => (
-                                      <div key={mappingIndex} style={{ 
-                                        padding: '0.75rem', 
-                                        border: '1px solid #e2e8f0', 
-                                        borderRadius: '6px',
-                                        backgroundColor: mappingIndex === 0 ? '#f7fafc' : 'white'
-                                      }}>
-                                        <div style={{ marginBottom: '0.5rem' }}>
-                                          <div style={{ fontWeight: '600', color: '#1a202c', marginBottom: '0.25rem' }}>
-                                            {mapping.display}
-                                            {mappingIndex === 0 && result.mappings.length > 1 && (
-                                              <span style={{ 
-                                                fontSize: '0.625rem', 
-                                                color: '#667eea', 
-                                                fontWeight: '500',
-                                                marginLeft: '0.5rem',
-                                                padding: '0.125rem 0.375rem',
-                                                backgroundColor: '#e2e8f0',
-                                                borderRadius: '4px'
-                                              }}>
-                                                BEST MATCH
-                                              </span>
-                                            )}
-                                          </div>
-                                          <div style={{ fontSize: '0.75rem', color: '#667eea' }}>
-                                            {mapping.system.toUpperCase()}: {mapping.code}
-                                          </div>
-                                        </div>
-                                        <div style={{ maxWidth: '200px' }}>
-                                          <ConfidenceBar confidence={mapping.confidence} height="sm" showLabel={true} />
-                                        </div>
-                                      </div>
-                                    ))}
+                              </div>
+
+                              {/* Best Match Preview (when collapsed) */}
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0, overflow: 'hidden' }}>
+                                {!isExpanded && bestMatch ? (
+                                  <>
+                                    <div style={{
+                                      padding: '0.4rem 0.6rem',
+                                      backgroundColor: '#edf2f7',
+                                      borderRadius: '6px',
+                                      fontSize: '0.8rem',
+                                      color: '#2d3748',
+                                      flex: '1',
+                                      minWidth: 0,
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      whiteSpace: 'nowrap'
+                                    }}>
+                                      <span style={{ color: '#667eea', fontWeight: '600', marginRight: '0.5rem' }}>
+                                        {bestMatch.system.toUpperCase()}
+                                      </span>
+                                      {bestMatch.display}
+                                    </div>
+                                    <div style={{ width: '70px', flexShrink: 0 }}>
+                                      <ConfidenceBar confidence={bestMatch.confidence} height="sm" showLabel={true} />
+                                    </div>
+                                  </>
+                                ) : !isExpanded && (
+                                  <div style={{ color: '#a0aec0', fontSize: '0.8rem', fontStyle: 'italic' }}>
+                                    No matches found
                                   </div>
-                                ) : (
-                                  <span style={{ color: '#a0aec0', fontStyle: 'italic' }}>No mapping found</span>
                                 )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                              </div>
+                            </div>
+
+                            {/* Expanded Content */}
+                            {isExpanded && result.mappings.length > 0 && (
+                              <div style={{
+                                padding: '0 1rem 1rem 3.5rem',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '0.75rem'
+                              }}>
+                                {result.mappings.map((mapping, mappingIndex) => (
+                                  <div
+                                    key={mappingIndex}
+                                    style={{
+                                      padding: '0.75rem 1rem',
+                                      border: '1px solid #e2e8f0',
+                                      borderRadius: '8px',
+                                      backgroundColor: 'white',
+                                      display: 'flex',
+                                      justifyContent: 'space-between',
+                                      alignItems: 'center',
+                                      gap: '1rem'
+                                    }}
+                                  >
+                                    <div style={{ flex: '1' }}>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                                        <span style={{
+                                          backgroundColor: '#667eea',
+                                          color: 'white',
+                                          padding: '0.125rem 0.5rem',
+                                          borderRadius: '4px',
+                                          fontSize: '0.7rem',
+                                          fontWeight: '600'
+                                        }}>
+                                          {mapping.system.toUpperCase()}
+                                        </span>
+                                        {mappingIndex === 0 && result.mappings.length > 1 && (
+                                          <span style={{
+                                            fontSize: '0.65rem',
+                                            color: '#48bb78',
+                                            fontWeight: '600',
+                                            padding: '0.125rem 0.375rem',
+                                            backgroundColor: '#c6f6d5',
+                                            borderRadius: '4px'
+                                          }}>
+                                            BEST MATCH
+                                          </span>
+                                        )}
+                                      </div>
+                                      <div style={{ fontWeight: '500', color: '#1a202c', fontSize: '0.9rem' }}>
+                                        {mapping.display}
+                                      </div>
+                                      <div style={{ fontSize: '0.75rem', color: '#718096', marginTop: '0.25rem' }}>
+                                        Code: {mapping.code}
+                                      </div>
+                                    </div>
+                                    <div style={{ width: '100px' }}>
+                                      <ConfidenceBar confidence={mapping.confidence} height="sm" showLabel={true} />
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -909,7 +1124,7 @@ function App() {
                 {/* Getting Started */}
                 <div className="feature-card" style={{ cursor: 'default' }}>
                   <h2 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#1a202c', marginBottom: '1rem' }}>
-                    🚀 Getting Started
+                    Getting Started
                   </h2>
                   <p style={{ color: '#4a5568', marginBottom: '1rem' }}>
                     The Medical Terminology Mapper helps you convert medical terms into standardized codes from 
@@ -925,7 +1140,7 @@ function App() {
                 {/* Single Term Guide */}
                 <div className="feature-card" style={{ cursor: 'default' }}>
                   <h2 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#1a202c', marginBottom: '1rem' }}>
-                    📋 Single Term Mapping
+                    Single Term Mapping
                   </h2>
                   <div style={{ color: '#4a5568' }}>
                     <p style={{ marginBottom: '1rem' }}>
@@ -944,7 +1159,7 @@ function App() {
                 {/* Batch Processing Guide */}
                 <div className="feature-card" style={{ cursor: 'default' }}>
                   <h2 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#1a202c', marginBottom: '1rem' }}>
-                    📁 Batch Processing
+                    Batch Processing
                   </h2>
                   <div style={{ color: '#4a5568' }}>
                     <p style={{ marginBottom: '1rem' }}>
@@ -963,16 +1178,16 @@ function App() {
                 {/* Understanding Results */}
                 <div className="feature-card" style={{ cursor: 'default' }}>
                   <h2 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#1a202c', marginBottom: '1rem' }}>
-                    📊 Understanding Results
+                    Understanding Results
                   </h2>
                   <div style={{ color: '#4a5568' }}>
                     <h3 style={{ fontSize: '1.1rem', fontWeight: '600', marginBottom: '0.5rem', color: '#2d3748' }}>
                       Confidence Scores
                     </h3>
                     <ul style={{ paddingLeft: '1.5rem', marginBottom: '1rem' }}>
-                      <li><span style={{ color: '#48bb78', fontWeight: '600' }}>🟢 High (80-100%)</span>: Excellent match, use with confidence</li>
-                      <li><span style={{ color: '#ed8936', fontWeight: '600' }}>🟡 Medium (60-79%)</span>: Good match, review recommended</li>
-                      <li><span style={{ color: '#e53e3e', fontWeight: '600' }}>🔴 Low (0-59%)</span>: Weak match, manual validation needed</li>
+                      <li><span style={{ color: '#48bb78', fontWeight: '600' }}>High (80-100%)</span>: Excellent match, use with confidence</li>
+                      <li><span style={{ color: '#ed8936', fontWeight: '600' }}>Medium (60-79%)</span>: Good match, review recommended</li>
+                      <li><span style={{ color: '#e53e3e', fontWeight: '600' }}>Low (0-59%)</span>: Weak match, manual validation needed</li>
                     </ul>
                     
                     <h3 style={{ fontSize: '1.1rem', fontWeight: '600', marginBottom: '0.5rem', color: '#2d3748' }}>
@@ -989,7 +1204,7 @@ function App() {
                 {/* API Access */}
                 <div className="feature-card" style={{ cursor: 'default' }}>
                   <h2 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#1a202c', marginBottom: '1rem' }}>
-                    🔌 API Access
+                    API Access
                   </h2>
                   <div style={{ color: '#4a5568' }}>
                     <p style={{ marginBottom: '1rem' }}>

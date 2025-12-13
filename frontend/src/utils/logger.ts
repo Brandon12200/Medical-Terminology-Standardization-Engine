@@ -84,7 +84,7 @@ class Logger {
     
     // Also log to console group for better visibility
     if (error) {
-      console.group('🔴 Error Details');
+      console.group('Error Details');
       console.error('Message:', message);
       if (error.stack) {
         console.error('Stack:', error.stack);
