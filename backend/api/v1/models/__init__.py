@@ -2,6 +2,6 @@
 API v1 models
 """
 
-from . import terminology, batch, document
+from . import terminology, batch
 
-__all__ = ["terminology", "batch", "document"]
+__all__ = ["terminology", "batch"]

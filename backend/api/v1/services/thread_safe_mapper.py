@@ -96,11 +96,17 @@ class ThreadSafeTerminologyMapper:
                     )
                     
                     if local_result and local_result.get("found", False):
+                        # Convert score (0-100) to confidence (0-1) if confidence not present
+                        confidence = local_result.get("confidence")
+                        if confidence is None:
+                            score = local_result.get("score", 100)
+                            confidence = score / 100 if score <= 100 else score / 1000
+
                         system_results = [{
                             "code": local_result.get("code", ""),
                             "display": local_result.get("display", ""),
                             "system": system,
-                            "confidence": local_result.get("confidence", 1.0),
+                            "confidence": confidence,
                             "match_type": local_result.get("match_type", "local"),
                             "source": "local_database"
                         }]

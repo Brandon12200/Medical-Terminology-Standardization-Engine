@@ -1,26 +1,14 @@
-# Core requirements
+# Core data processing
 numpy==1.26.4
 pandas==2.2.2
-sqlalchemy==2.0.20
-transformers==4.36.2
-torch==2.2.2
-nltk==3.8.1
+openpyxl==3.1.2
+
+# Fuzzy matching
+rapidfuzz==3.6.1
 scikit-learn==1.4.0
 scipy==1.10.1
 
-# ML and NLP requirements  
-spacy==3.6.1
-scispacy==0.5.3
-datasets==2.14.6
-tokenizers==0.15.0
-seqeval==1.2.2
-
-# Text extraction requirements
-PyPDF2==3.0.1
-python-docx==1.1.0
-tika==2.6.0
-
-# Web and API requirements
+# Web and API
 fastapi==0.109.0
 uvicorn[standard]==0.26.0
 pydantic==2.5.3
@@ -29,17 +17,14 @@ python-multipart==0.0.6
 python-dotenv==1.0.0
 httpx==0.26.0
 aiofiles==23.2.1
-python-magic==0.4.27
+requests==2.31.0
 
-# Background processing removed - using synchronous API
-
-# Testing requirements
+# Testing
 pytest==7.4.0
 pytest-cov==4.1.0
 pytest-asyncio==0.21.1
-reportlab==4.0.7
 
-# Development requirements
+# Development
 black==23.7.0
 isort==5.12.0
 flake8==6.1.0

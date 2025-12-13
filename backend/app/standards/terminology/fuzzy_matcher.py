@@ -443,16 +443,22 @@ class FuzzyMatcher:
         best_match = None
         best_score = 0
         match_type = ""
-        
+
         if ratio_matches and ratio_matches[1] > best_score:
             best_score = ratio_matches[1]
             best_match = ratio_matches[0]
             match_type = "ratio"
-            
+
+        # For partial_ratio, require that the matched term is at least 30% of the
+        # query term length (or vice versa) to avoid matching short abbreviations
+        # against long words (e.g., "ra" matching "pneumonoultramicroscopicsilicovolcanoconiosis")
         if partial_matches and partial_matches[1] > best_score:
-            best_score = partial_matches[1]
-            best_match = partial_matches[0]
-            match_type = "partial_ratio"
+            matched_term = partial_matches[0]
+            len_ratio = min(len(matched_term), len(term)) / max(len(matched_term), len(term))
+            if len_ratio >= 0.3:  # At least 30% length similarity
+                best_score = partial_matches[1]
+                best_match = matched_term
+                match_type = "partial_ratio"
             
         if token_matches and token_matches[1] > best_score:
             best_score = token_matches[1]

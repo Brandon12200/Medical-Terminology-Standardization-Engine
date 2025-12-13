@@ -1,6 +1,0 @@
-Patient presents with uncontrolled diabetes mellitus type 2 and hypertension.
-Current medications include metformin 1000mg twice daily and lisinopril 10mg daily.
-Lab results show elevated glucose levels and hemoglobin A1c of 8.5%.
-Patient also reports symptoms of gastroesophageal reflux disease.
-Recommend starting omeprazole and adjusting diabetes medication regimen.
-Follow up in 3 months with repeat HbA1c and basic metabolic panel.

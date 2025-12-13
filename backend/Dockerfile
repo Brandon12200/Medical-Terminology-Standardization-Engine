@@ -2,43 +2,26 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies
+# Install minimal system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
-    g++ \
     curl \
-    wget \
-    libmagic1 \
-    libmagic-dev \
-    default-jre-headless \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Rust (required for tokenizers)
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-ENV PATH="/root/.cargo/bin:${PATH}"
-
-# Set Java environment for Tika
-ENV JAVA_HOME=/usr/lib/jvm/default-java
-
 # Copy requirements first for better caching
-COPY requirements-minimal.txt .
+COPY requirements.txt .
 
 # Upgrade pip and install dependencies
 RUN pip install --upgrade pip setuptools wheel
-RUN pip install --no-cache-dir -r requirements-minimal.txt
-
-# Download required NLTK data as root before switching users
-RUN python -c "import nltk; nltk.download('punkt', download_dir='/usr/local/share/nltk_data'); nltk.download('stopwords', download_dir='/usr/local/share/nltk_data')"
-ENV NLTK_DATA=/usr/local/share/nltk_data
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY app/ ./app/
 COPY api/ ./api/
 COPY tests/ ./tests/
-COPY data/ ./data/
 
-# Create required directories
-RUN mkdir -p logs uploads cache
+# Create required directories (data is mounted via docker-compose)
+RUN mkdir -p logs uploads cache data
 
 # Set Python path
 ENV PYTHONPATH="/app:${PYTHONPATH}"
