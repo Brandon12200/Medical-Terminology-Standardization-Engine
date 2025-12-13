@@ -1,10 +1,44 @@
 """Thread-safe terminology mapper for use with FastAPI."""
 import threading
 from typing import Dict, List, Optional, Any
+from rapidfuzz import fuzz
 from app.standards.terminology.mapper import TerminologyMapper
 from app.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
+
+
+def calculate_confidence(search_term: str, display: str) -> float:
+    """
+    Calculate confidence score based on how well the search term matches the result.
+
+    Uses multiple fuzzy matching strategies and returns the best score.
+    """
+    if not search_term or not display:
+        return 0.0
+
+    search_lower = search_term.lower().strip()
+    display_lower = display.lower().strip()
+
+    # Exact match
+    if search_lower == display_lower:
+        return 1.0
+
+    # Check if search term is contained in display (or vice versa)
+    if search_lower in display_lower or display_lower in search_lower:
+        # Use ratio for contained matches
+        containment_score = fuzz.ratio(search_lower, display_lower) / 100
+        return max(0.85, containment_score)  # At least 85% for containment
+
+    # Calculate various similarity scores
+    ratio = fuzz.ratio(search_lower, display_lower) / 100
+    token_sort = fuzz.token_sort_ratio(search_lower, display_lower) / 100
+    token_set = fuzz.token_set_ratio(search_lower, display_lower) / 100
+
+    # Use the best score among the methods
+    best_score = max(ratio, token_sort, token_set)
+
+    return round(best_score, 2)
 
 class ThreadSafeTerminologyMapper:
     """Thread-safe wrapper for TerminologyMapper that creates new instances per thread."""
@@ -70,13 +104,15 @@ class ThreadSafeTerminologyMapper:
                         else:
                             api_results = []
                         
-                        # Format API results
+                        # Format API results with calculated confidence
                         for result in api_results:
+                            display = result.get("display", "")
+                            confidence = calculate_confidence(term, display)
                             system_results.append({
                                 "code": result.get("code", ""),
-                                "display": result.get("display", ""),
+                                "display": display,
                                 "system": system,
-                                "confidence": 0.95,
+                                "confidence": confidence,
                                 "match_type": "api",
                                 "source": result.get("source", "external_api")
                             })

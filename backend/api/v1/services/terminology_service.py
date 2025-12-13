@@ -80,18 +80,20 @@ class TerminologyService:
         context: Optional[str] = None,
         fuzzy_threshold: float = 0.7,
         fuzzy_algorithms: List[str] = ["all"],
-        max_results_per_term: int = 5
+        max_results_per_term: int = 3,
+        min_confidence: float = 0.6
     ) -> List[Dict[str, Any]]:
         """
         Map multiple terms in batch.
-        
+
         Args:
             terms: List of medical terms to map
             systems: List of terminology systems to search
             context: Clinical context for better matching
             fuzzy_threshold: Minimum confidence for fuzzy matches
             fuzzy_algorithms: List of fuzzy algorithms to use
-            max_results_per_term: Maximum results per term
+            max_results_per_term: Maximum results per term per system
+            min_confidence: Minimum confidence threshold (filters out low-quality matches)
             
         Returns:
             List of mapping results for each term
@@ -167,18 +169,29 @@ class TerminologyService:
                     })
                 else:
                     successful_count += 1
+                    # Filter results by minimum confidence threshold
+                    filtered_result = {}
+                    if isinstance(result, dict):
+                        for system, mappings in result.items():
+                            filtered_mappings = [
+                                m for m in mappings
+                                if m.get("confidence", 0) >= min_confidence
+                            ]
+                            if filtered_mappings:
+                                filtered_result[system] = filtered_mappings
+
                     # Count total mappings for this term
-                    total_mappings = sum(len(mappings) for mappings in result.values()) if isinstance(result, dict) else 0
+                    total_mappings = sum(len(mappings) for mappings in filtered_result.values())
                     if total_mappings > 0:
                         logger.info(f"Successfully mapped term '{term}' (#{i+1}/{len(terms)}): {total_mappings} mappings found")
                         status = "success"
                     else:
                         logger.warning(f"No mappings found for term '{term}' (#{i+1}/{len(terms)})")
                         status = "no_mappings"
-                    
+
                     formatted_results.append({
                         "term": term,
-                        "results": result,
+                        "results": filtered_result,
                         "status": status
                     })
             
