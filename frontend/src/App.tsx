@@ -797,7 +797,7 @@ function App() {
                         demonstrating accuracy across diverse clinical scenarios and specialties.
                       </p>
                       <div style={{ fontSize: '0.875rem', opacity: '0.8' }}>
-                        <strong>Total Terms:</strong> 1,000+ medical concepts • 
+                        •<strong>Total Terms:</strong> 1,000+ medical concepts • 
                         <strong>Coverage:</strong> 15+ medical specialties • 
                         <strong>Complexity:</strong> Simple to highly specialized terminology
                       </div>
