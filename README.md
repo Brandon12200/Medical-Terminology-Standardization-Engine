@@ -67,12 +67,23 @@ Anything below 60% gets filtered out. Batch processing caps at 3 results per ter
 
 ```bash
 git clone https://github.com/Brandon12200/Medical-Terminology-Standardization-Engine.git
-cd Medical-Terminology-Standardization-Engine
-docker-compose up -d
-
-# Frontend: http://localhost:3000
-# API docs: http://localhost:8000/api/docs
 ```
+
+```bash
+cd Medical-Terminology-Standardization-Engine
+```
+
+```bash
+./start.sh   # Builds, starts services, and opens browser
+```
+
+```bash
+./stop.sh    # Stops all services
+```
+
+Frontend: http://localhost:3000
+
+API docs: http://localhost:8000/docs
 
 ## API
 
